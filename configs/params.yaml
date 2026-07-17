@@ -1,0 +1,68 @@
+# =============================================================================
+# params.yaml — model hyperparameters & strategy configuration (HOW)
+# =============================================================================
+
+random_state: 42
+test_size: 0.15
+val_size: 0.15   # taken from the remaining train split (i.e. train/val/test ~ 0.70/0.15/0.15)
+
+preprocessing:
+  # Strategy pattern: chosen by name in src/.../preprocessing/cleaners.py
+  strategy: "standard"       # options: "minimal", "standard", "aggressive"
+  lowercase: true
+  remove_html: true
+  remove_punctuation: true
+  remove_numbers: false
+  normalize_whitespace: true
+  remove_stopwords: true
+  lemmatize: true
+
+features:
+  # Strategy pattern: chosen by name in src/.../features/vectorizers.py
+  strategy: "tfidf"          # options: "tfidf", "count", "tfidf_char"
+  max_features: 20000
+  ngram_range: [1, 2]
+  min_df: 2
+  max_df: 0.9
+  sublinear_tf: true
+
+models:
+  # Factory + Registry pattern: each entry is created by name in models/factory.py
+  active_models:
+    - logistic_regression
+    - linear_svm
+    - multinomial_nb
+    - random_forest
+
+  logistic_regression:
+    C: 1.0
+    max_iter: 2000
+    solver: "liblinear"
+    class_weight: "balanced"
+
+  linear_svm:
+    C: 1.0
+    loss: "squared_hinge"
+    max_iter: 5000
+    class_weight: "balanced"
+
+  multinomial_nb:
+    alpha: 1.0
+
+  random_forest:
+    n_estimators: 300
+    max_depth: 40
+    n_jobs: -1
+    class_weight: "balanced"
+
+  # Optional bonus lightweight deep-learning-ish model:
+  # SGDClassifier trained with log_loss approximates a linear neural unit
+  # and is included as a fast "bonus" model without adding a heavy DL dependency.
+  sgd_linear:
+    loss: "log_loss"
+    alpha: 0.0001
+    max_iter: 2000
+
+selection:
+  # Metric used to pick the best model in eval/evaluator.py
+  primary_metric: "f1"
