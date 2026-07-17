@@ -1,0 +1,50 @@
+# =============================================================================
+# config.yaml — path & dataset configuration (WHAT & WHERE)
+# =============================================================================
+
+artifacts_root: artifacts
+
+kaggle:
+  dataset_slug: "lakshmi25npathi/imdb-dataset-of-50k-movie-reviews"
+  raw_csv_name: "IMDB Dataset.csv"
+
+data_ingestion:
+  raw_data_dir: data/raw
+  raw_file_path: data/raw/IMDB_Dataset.csv
+  processed_data_dir: data/processed
+  train_file_path: data/processed/train.csv
+  val_file_path: data/processed/val.csv
+  test_file_path: data/processed/test.csv
+
+# Named, reproducible subset sizes (registry pattern — referenced by name from CLI)
+subsets:
+  dev:
+    n_samples: 2000
+    description: "Tiny subset for fast smoke-testing of the full pipeline."
+  medium:
+    n_samples: 10000
+    description: "Medium subset for fast, still-representative experimentation."
+  full:
+    n_samples: null
+    description: "The complete 50,000-review IMDB dataset."
+
+eda:
+  output_dir: artifacts/plots/eda
+  top_n_words: 25
+  top_n_ngrams: 20
+  ngram_range: [2, 3]
+  generate_wordcloud: true
+  sample_reviews_to_show: 5
+
+model_trainer:
+  artifacts_dir: artifacts/models
+  metrics_dir: artifacts/metrics
+  target_column: sentiment
+  text_column: review
+  positive_label: "positive"
+  negative_label: "negative"
+  cv_folds: 5
+
+logging:
+  log_dir: logs
+  log_file: running_logs.log
